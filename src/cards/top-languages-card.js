@@ -71,6 +71,7 @@ const renderTopLanguages = (topLangs, options = {}) => {
     bg_color,
     hide,
     theme,
+    show_bg,
     layout,
   } = options;
 
@@ -181,11 +182,13 @@ const renderTopLanguages = (topLangs, options = {}) => {
       textColor,
       bgColor,
     },
+    cardFor: `top-langs-${layout}`,
   });
 
   card.disableAnimations();
   card.setHideBorder(hide_border);
   card.setHideTitle(hide_title);
+  card.setBgVisible(show_bg);
   card.setCSS(`
     .lang-name { font: 400 11px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${textColor} }
   `);

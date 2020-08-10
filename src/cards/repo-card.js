@@ -6,6 +6,7 @@ const {
   wrapTextMultiline,
 } = require("../common/utils");
 const icons = require("../common/icons");
+const bg = require("../common/background");
 const Card = require("../common/Card");
 const toEmoji = require("emoji-name-map");
 
@@ -25,6 +26,7 @@ const renderRepoCard = (repo, options = {}) => {
     icon_color,
     text_color,
     bg_color,
+    show_bg,
     show_owner,
     theme = "default_repocard",
   } = options;
@@ -115,8 +117,10 @@ const renderRepoCard = (repo, options = {}) => {
       iconColor,
       bgColor,
     },
+    cardFor: "repo",
   });
 
+  card.setBgVisible(show_bg);
   card.disableAnimations();
   card.setHideBorder(false);
   card.setHideTitle(false);

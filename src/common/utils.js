@@ -1,6 +1,10 @@
+const { getLocal } = require("../locale");
+const numb = require("numbro");
 const axios = require("axios");
 const wrap = require("word-wrap");
 const themes = require("../../themes");
+
+const locals = getLocal();
 
 const renderError = (message, secondaryMessage = "") => {
   return `
@@ -30,9 +34,7 @@ function encodeHTML(str) {
 }
 
 function kFormatter(num) {
-  return Math.abs(num) > 999
-    ? Math.sign(num) * (Math.abs(num) / 1000).toFixed(1) + "k"
-    : Math.sign(num) * Math.abs(num);
+  return locals.NUMBRO.doNumberFormat(num);
 }
 
 function isValidHexColor(hexColor) {

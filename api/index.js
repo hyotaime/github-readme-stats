@@ -17,6 +17,7 @@ module.exports = async (req, res) => {
     hide_border,
     hide_rank,
     show_icons,
+    show_bg,
     count_private,
     include_all_commits,
     line_height,
@@ -30,7 +31,7 @@ module.exports = async (req, res) => {
   let stats;
 
   res.setHeader("Content-Type", "image/svg+xml");
-
+  console.log("user", username);
   try {
     stats = await fetchStats(
       username,
@@ -53,7 +54,6 @@ module.exports = async (req, res) => {
   );
 
   res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
-
   res.send(
     renderStatsCard(stats, {
       hide: parseArray(hide),
@@ -68,6 +68,7 @@ module.exports = async (req, res) => {
       text_color,
       bg_color,
       theme,
+      show_bg: (show_bg == "1"),
     })
   );
 };

@@ -8,6 +8,10 @@ const { getStyles } = require("../getStyles");
 const icons = require("../common/icons");
 const Card = require("../common/Card");
 
+// setting up locale
+const { getLocal } = require("../locale");
+const locals = getLocal();
+
 const createTextNode = ({
   icon,
   label,
@@ -64,6 +68,7 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
     icon_color,
     text_color,
     bg_color,
+    show_bg,
     theme = "default",
   } = options;
 
@@ -82,33 +87,33 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
   const STATS = {
     stars: {
       icon: icons.star,
-      label: "Total Stars",
+      label: locals.STARS,
       value: totalStars,
       id: "stars",
     },
     commits: {
       icon: icons.commits,
-      label: `Total Commits${
-        include_all_commits ? "" : ` (${new Date().getFullYear()})`
+      label: `${locals.COMMITS}${
+        include_all_commits ? "" : ` (${new Date().getFullYear()}${locals.YEAR_SUFFIX})`
       }`,
       value: totalCommits,
       id: "commits",
     },
     prs: {
       icon: icons.prs,
-      label: "Total PRs",
+      label: locals.PRS,
       value: totalPRs,
       id: "prs",
     },
     issues: {
       icon: icons.issues,
-      label: "Total Issues",
+      label: locals.ISSUES,
       value: totalIssues,
       id: "issues",
     },
     contribs: {
       icon: icons.contribs,
-      label: "Contributed to",
+      label: locals.CONTRIBS,
       value: contributedTo,
       id: "contribs",
     },
@@ -138,7 +143,7 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
   const rankCircle = hide_rank
     ? ""
     : `<g data-testid="rank-circle" 
-          transform="translate(400, ${height / 2 - 50})">
+          transform="translate(370, ${height / 2 - 50})">
         <circle class="rank-circle-rim" cx="-10" cy="8" r="40" />
         <circle class="rank-circle" cx="-10" cy="8" r="40" />
         <g class="rank-text">
@@ -167,7 +172,9 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
 
   const apostrophe = ["x", "s"].includes(name.slice(-1)) ? "" : "s";
   const card = new Card({
-    title: `${encodeHTML(name)}'${apostrophe} GitHub Stats`,
+    title: locals.HEADING
+      .replace("$[name]", encodeHTML(name))
+      .replace("$[apostrophe]", apostrophe),
     width: 495,
     height,
     colors: {
@@ -176,8 +183,10 @@ const renderStatsCard = (stats = {}, options = { hide: [] }) => {
       iconColor,
       bgColor,
     },
+    cardFor: "stats",
   });
 
+  card.setBgVisible(show_bg);
   card.setHideBorder(hide_border);
   card.setHideTitle(hide_title);
   card.setCSS(cssStyles);

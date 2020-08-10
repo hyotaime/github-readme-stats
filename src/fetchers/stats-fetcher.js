@@ -99,7 +99,7 @@ async function fetchStats(
     contributedTo: 0,
     rank: { level: "C", score: 0 },
   };
-
+  
   let res = await retryer(fetcher, { login: username });
 
   let experimental_totalCommits = 0;
