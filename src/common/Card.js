@@ -1,5 +1,6 @@
 const { FlexLayout } = require("../common/utils");
 const { getAnimations } = require("../getStyles");
+const bg = require("../common/background");
 
 class Card {
   constructor({
@@ -8,14 +9,17 @@ class Card {
     colors = {},
     title = "",
     titlePrefixIcon,
+    cardFor = null,
   }) {
     this.width = width;
     this.height = height;
 
+    this.hideBg = true;
     this.hideBorder = false;
     this.hideTitle = false;
 
     // returns theme based colors with proper overrides and defaults
+    this.cardFor = cardFor;
     this.colors = colors;
     this.title = title;
     this.css = "";
@@ -24,6 +28,10 @@ class Card {
     this.paddingY = 35;
     this.titlePrefixIcon = titlePrefixIcon;
     this.animations = true;
+  }
+
+  setBgVisible(state) {
+    this.hideBg = !state;
   }
 
   disableAnimations() {
@@ -114,10 +122,21 @@ class Card {
           x="0.5"
           y="0.5"
           rx="4.5"
-          height="99%"
+          height="99.5%"
           stroke="#E4E2E2"
           width="${this.width - 1}"
           fill="${this.colors.bgColor}"
+          stroke-opacity="${this.hideBorder ? 0 : 1}"
+        />
+        ${this.hideBg ? "" : bg.renderBackground(this.cardFor)}
+        <rect
+          data-testid="card-bg2"
+          x="0.5"
+          y="0.5"
+          rx="4.5"
+          height="99.5%"
+          stroke="#E4E2E2"
+          width="${this.width - 1}"
           stroke-opacity="${this.hideBorder ? 0 : 1}"
         />
 

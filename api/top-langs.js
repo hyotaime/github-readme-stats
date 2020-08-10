@@ -20,6 +20,7 @@ module.exports = async (req, res) => {
     text_color,
     bg_color,
     theme,
+    show_bg,
     cache_seconds,
     layout,
   } = req.query;
@@ -51,6 +52,7 @@ module.exports = async (req, res) => {
       text_color,
       bg_color,
       theme,
+      show_bg: (show_bg == "1"),
       layout,
     })
   );
