@@ -1,8 +1,12 @@
 // @ts-check
+import { getLocal } from "../locale.js";
+import numb from "numbro";
 import axios from "axios";
 import toEmoji from "emoji-name-map";
 import wrap from "word-wrap";
 import { themes } from "../../themes/index.js";
+
+import locals = getLocal();
 
 const TRY_AGAIN_LATER = "Please try again later";
 
@@ -116,9 +120,7 @@ const iconWithLabel = (icon, label, testid, iconSize) => {
  * @returns {string|number} The formatted number.
  */
 const kFormatter = (num) => {
-  return Math.abs(num) > 999
-    ? Math.sign(num) * parseFloat((Math.abs(num) / 1000).toFixed(1)) + "k"
-    : Math.sign(num) * Math.abs(num);
+  return locals.NUMBRO.doNumberFormat(num);
 };
 
 /**
