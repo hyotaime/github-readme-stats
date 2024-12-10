@@ -64,32 +64,31 @@ l-66 6 -82 -78z m701 -1395 c2 -22 2 -40 1 -40 -1 0 -10 11 -19 25 -13 20 -14
 26 -20z m1364 -745 c13 -107 15 -263 3 -250 -5 6 -21 40 -36 76 -28 66 -28 68
 -16 160 20 163 30 166 49 14z m1252 -457 c-9 -31 -9 -31 -10 -6 -1 30 11 67
 16 51 2 -6 0 -26 -6 -45z"/>
-</g>`
-}
-
-export const touhouBackground = function (views) {
-    let t_apple_translate = "0 0",
-        useTouhouApple = false,
-        useTouhou = false;
-    if (views === "top-langs-compact") {
-        useTouhouApple = true;
-        t_apple_translate = "-53 -29";
-    } else if (views.indexOf("top-langs-") !== -1) {
-        useTouhouApple = true;
-        t_apple_translate = "-43 -22";
-    } else if (views === "stats") {
-        useTouhou = true;
-        useTouhouApple = true;
-    }
-    return [
-        useTouhou ? bg.touhou : "",
-        useTouhouApple
-            ? bg.touhou_apple.replace("$[t_apple_translate]", t_apple_translate)
-            : "",
-    ].join("");
-};
-export const renderBackground = function (view) {
-    return touhouBackground(view);
+</g>`,
+renderBackground(view) {
+        return this.touhouBackground(view);
+    },
+    touhouBackground(views) {
+        let t_apple_translate = "0 0",
+            useTouhouApple = false,
+            useTouhou = false;
+        if (views === "top-langs-compact") {
+            useTouhouApple = true;
+            t_apple_translate = "-53 -29";
+        } else if (views.indexOf("top-langs-") !== -1) {
+            useTouhouApple = true;
+            t_apple_translate = "-43 -22";
+        } else if (views === "stats") {
+            useTouhou = true;
+            useTouhouApple = true;
+        }
+        return [
+            useTouhou ? this.touhou : "",
+            useTouhouApple
+                ? this.touhou_apple.replace("$[t_apple_translate]", t_apple_translate)
+                : "",
+        ].join("");
+    },
 };
 
 export default bg;
