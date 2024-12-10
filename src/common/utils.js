@@ -6,7 +6,7 @@ import toEmoji from "emoji-name-map";
 import wrap from "word-wrap";
 import { themes } from "../../themes/index.js";
 
-import locals = getLocal();
+const locals = getLocal();
 
 const TRY_AGAIN_LATER = "Please try again later";
 
