@@ -83,7 +83,7 @@ const statCardLocales = ({ name, apostrophe }) => {
       "zh-tw": "獲標星數（star）",
       cs: "Celkem hvězd",
       de: "Insgesamt erhaltene Sterne",
-      en: "Total Stars Earned",
+      en: "Total Stars",
       bn: "সর্বমোট Star",
       es: "Estrellas totales",
       fr: "Total d'étoiles",
