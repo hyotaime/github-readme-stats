@@ -67,6 +67,33 @@ l-66 6 -82 -78z m701 -1395 c2 -22 2 -40 1 -40 -1 0 -10 11 -19 25 -13 20 -14
 </g>`
 }
 
+export const touhouBackground = function (views) {
+    let t_apple_translate = "0 0",
+        useTouhouApple = false,
+        useTouhou = false;
+    if (views === "top-langs-compact") {
+        useTouhouApple = true;
+        t_apple_translate = "-53 -29";
+    } else if (views.indexOf("top-langs-") !== -1) {
+        useTouhouApple = true;
+        t_apple_translate = "-43 -22";
+    } else if (views === "stats") {
+        useTouhou = true;
+        useTouhouApple = true;
+    }
+    return [
+        useTouhou ? bg.touhou : "",
+        useTouhouApple
+            ? bg.touhou_apple.replace("$[t_apple_translate]", t_apple_translate)
+            : "",
+    ].join("");
+};
+export const renderBackground = function (view) {
+    return touhouBackground(view);
+};
+
+export default bg;
+/*
 module.exports = {
 	bg,
 	touhouBackground: function(views) {
@@ -93,4 +120,4 @@ module.exports = {
 	renderBackground: function(view) {
 		return this.touhouBackground(view);
 	}
-}
+}*/

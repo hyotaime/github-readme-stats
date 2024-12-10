@@ -1,5 +1,5 @@
 import { encodeHTML, flexLayout } from "./utils.js";
-import { bg } from "../common/background.js";
+import bg, { renderBackground } from "../common/background.js";
 
 class Card {
   /**
