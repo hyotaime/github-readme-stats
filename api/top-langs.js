@@ -1,15 +1,15 @@
-require("dotenv").config();
-const {
-  renderError,
-  clampValue,
-  parseBoolean,
-  parseArray,
+import { renderTopLanguages } from "../src/cards/top-languages-card.js";
+import { blacklist } from "../src/common/blacklist.js";
+import {
   CONSTANTS,
-} = require("../src/common/utils");
-const fetchTopLanguages = require("../src/fetchers/top-languages-fetcher");
-const renderTopLanguages = require("../src/cards/top-languages-card");
+  parseArray,
+  parseBoolean,
+  renderError,
+} from "../src/common/utils.js";
+import { fetchTopLanguages } from "../src/fetchers/top-languages-fetcher.js";
+import { isLocaleAvailable } from "../src/translations.js";
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   const {
     username,
     hide,
@@ -23,37 +23,102 @@ module.exports = async (req, res) => {
     show_bg,
     cache_seconds,
     layout,
+    langs_count,
+    exclude_repo,
+    size_weight,
+    count_weight,
+    custom_title,
+    locale,
+    border_radius,
+    border_color,
+    disable_animations,
+    hide_progress,
   } = req.query;
-  let topLangs;
-
   res.setHeader("Content-Type", "image/svg+xml");
 
-  try {
-    topLangs = await fetchTopLanguages(username);
-  } catch (err) {
-    return res.send(renderError(err.message));
+  if (blacklist.includes(username)) {
+    return res.send(
+      renderError("Something went wrong", "This username is blacklisted", {
+        title_color,
+        text_color,
+        bg_color,
+        border_color,
+        theme,
+      }),
+    );
   }
 
-  const cacheSeconds = clampValue(
-    parseInt(cache_seconds || CONSTANTS.THIRTY_MINUTES, 10),
-    CONSTANTS.THIRTY_MINUTES,
-    CONSTANTS.ONE_DAY
-  );
+  if (locale && !isLocaleAvailable(locale)) {
+    return res.send(renderError("Something went wrong", "Locale not found"));
+  }
 
-  res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
+  if (
+    layout !== undefined &&
+    (typeof layout !== "string" ||
+      !["compact", "normal", "donut", "donut-vertical", "pie"].includes(layout))
+  ) {
+    return res.send(
+      renderError("Something went wrong", "Incorrect layout input"),
+    );
+  }
 
-  res.send(
-    renderTopLanguages(topLangs, {
-      hide_title: parseBoolean(hide_title),
-      hide_border: parseBoolean(hide_border),
-      card_width: parseInt(card_width, 10),
-      hide: parseArray(hide),
-      title_color,
-      text_color,
-      bg_color,
-      theme,
-      show_bg: (show_bg == "1"),
-      layout,
-    })
-  );
+  try {
+    const topLangs = await fetchTopLanguages(
+      username,
+      parseArray(exclude_repo),
+      size_weight,
+      count_weight,
+    );
+
+    let cacheSeconds = parseInt(
+      cache_seconds || CONSTANTS.TOP_LANGS_CACHE_SECONDS,
+      10,
+    );
+    cacheSeconds = process.env.CACHE_SECONDS
+      ? parseInt(process.env.CACHE_SECONDS, 10) || cacheSeconds
+      : cacheSeconds;
+
+    res.setHeader(
+      "Cache-Control",
+      `max-age=${cacheSeconds / 2}, s-maxage=${cacheSeconds}`,
+    );
+
+    return res.send(
+      renderTopLanguages(topLangs, {
+        custom_title,
+        hide_title: parseBoolean(hide_title),
+        hide_border: parseBoolean(hide_border),
+        card_width: parseInt(card_width, 10),
+        hide: parseArray(hide),
+        title_color,
+        text_color,
+        bg_color,
+        theme,
+        show_bg: (show_bg == "1"),
+        layout,
+        langs_count,
+        border_radius,
+        border_color,
+        locale: locale ? locale.toLowerCase() : null,
+        disable_animations: parseBoolean(disable_animations),
+        hide_progress: parseBoolean(hide_progress),
+      }),
+    );
+  } catch (err) {
+    res.setHeader(
+      "Cache-Control",
+      `max-age=${CONSTANTS.ERROR_CACHE_SECONDS / 2}, s-maxage=${
+        CONSTANTS.ERROR_CACHE_SECONDS
+      }, stale-while-revalidate=${CONSTANTS.ONE_DAY}`,
+    ); // Use lower cache period for errors.
+    return res.send(
+      renderError(err.message, err.secondaryMessage, {
+        title_color,
+        text_color,
+        bg_color,
+        border_color,
+        theme,
+      }),
+    );
+  }
 };
